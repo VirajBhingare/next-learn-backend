@@ -1,0 +1,39 @@
+{
+  "name": "next-learn-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.ts",
+  "scripts": {
+    "build": "rimraf dist && pnpm tsc",
+    "start": "pnpm run build && node dist/app.ts",
+    "dev": "pnpm run build && concurrently \"pnpm tsc -w\" \"nodemon --exec ts-node app.ts\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.12.3",
+  "dependencies": {
+    "@prisma/client": "^6.11.1",
+    "body-parser": "^2.2.0",
+    "concurrently": "^9.2.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.0.0",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "rimraf": "^6.0.1"
+  },
+  "devDependencies": {
+    "@types/body-parser": "^1.19.6",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^24.0.7",
+    "nodemon": "^3.1.10",
+    "prisma": "^6.11.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}
