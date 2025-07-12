@@ -9,25 +9,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.register = void 0;
+exports.login = void 0;
 const prismaClient_1 = require("../../prismaClient");
-const crypto_1 = require("crypto");
 const auth_1 = require("../../middleware/auth");
-const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
-    const existingUser = yield prismaClient_1.prisma.user.findUnique({ where: { email } });
-    if (existingUser) {
-        res.status(400).json({ error: "Email already in use" });
+    const user = yield prismaClient_1.prisma.user.findUnique({ where: { email } });
+    if (!user || !(0, auth_1.validatePassword)(password, user.password)) {
+        res.status(401).json({ error: "Invalid credentials" });
         return;
     }
-    const salt = (0, crypto_1.randomBytes)(16).toString("hex");
-    const hashedPassword = (0, auth_1.generateHashedPassword)(password, salt);
-    const user = yield prismaClient_1.prisma.user.create({
-        data: {
-            email,
-            password: hashedPassword,
-        },
+    const otp = (0, auth_1.generateOtp)();
+    const expiry = new Date(Date.now() + 5 * 60 * 1000);
+    yield prismaClient_1.prisma.user.update({
+        where: { email },
+        data: { otp, otpExpiry: expiry },
     });
-    res.status(201).json({ message: "User registered", userId: user.id });
+    console.log("OTP: ", otp);
+    res.status(201).json({ message: "OTP Sent", userId: user.id });
 });
-exports.register = register;
+exports.login = login;

@@ -1,18 +1,7 @@
 import { Request, RequestHandler, Response } from "express";
 import { prisma } from "../../prismaClient";
-import { randomBytes, scryptSync } from "crypto";
-import jwt from "jsonwebtoken";
-
-const generateHashedPassword = (password: string, salt: string) => {
-  const hash = scryptSync(password, salt, 64);
-  return `${salt}:${hash.toString("hex")}`;
-};
-
-const validatePassword = (password: string, hashedPassword: string) => {
-  const [salt, hashedKey] = hashedPassword.split(":");
-  const hashUserInput = scryptSync(password, salt, 64).toString("hex");
-  return hashUserInput === hashedKey;
-};
+import { randomBytes } from "crypto";
+import { generateHashedPassword } from "../../middleware/auth";
 
 export const register: RequestHandler = async (req: Request, res: Response) => {
   const { email, password } = req.body;
